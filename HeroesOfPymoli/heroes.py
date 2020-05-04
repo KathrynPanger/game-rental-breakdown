@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[51]:
 
 
 ################################################################
@@ -9,15 +8,11 @@
 ###############################################################
 
 
-# In[52]:
-
 
 #import dependencies
 import pandas as pd
 import numpy as np
 
-
-# In[53]:
 
 
 #read the master data file and create a dataframe
@@ -26,8 +21,6 @@ master_df = pd.read_csv(masterFile)
 master_df.head()
 
 
-# In[54]:
-
 
 #create the age group category for later and add to dataframe, completing my master dataframe
 bins=[0,9,14,19,24,29,34,39,400]
@@ -35,18 +28,15 @@ labels=["<10","10-14","15-19","20-24","25-29","30-34","35-39","40+"]
 master_df["Age Group"] = pd.cut(master_df["Age"], bins, labels=labels, include_lowest=True)
 
 
-# In[55]:
-
 
 #Create a dataframe to display total number of players
 unique_players=master_df["SN"].unique()
 total_players=np.count_nonzero(unique_players)
 total_players_df =pd.DataFrame([
     {"Total Players":total_players}])
-total_players_df
+print(total_players_df)
+print("\n")
 
-
-# In[56]:
 
 
 #Create a dataframe to display basic info about purchases
@@ -62,7 +52,8 @@ basic_info = pd.DataFrame([
          "Number of Purchases": total_purchases,
          "Total Revenue": total_revenue}
     ])
-basic_info
+print(basic_info)
+print("\n")
 
 
 # In[57]:
@@ -82,10 +73,11 @@ playerCount_df = pd.DataFrame({
 percent_gender = playerCount_df["Total Count"]/total_players*100
 playerCount_df["Percentage of Players"] = percent_gender
 
-playerCount_df
+print(playerCount_df.head())
+print("\n")
 
 
-# In[58]:
+
 
 
 #Create a table of summary statistics concerning Male and Female purchases
@@ -119,7 +111,7 @@ O_total_purchase_per.mean()
 
 #Put these in a list
 avg_total_list=[F_total_purchase_per.mean(), M_total_purchase_per.mean(),O_total_purchase_per.mean()]
-####
+
 
 #Put everything in a dataframe
 gender_stats_df = pd.DataFrame({"Purchase Count": gender_purchaseCount,
@@ -127,10 +119,10 @@ gender_stats_df = pd.DataFrame({"Purchase Count": gender_purchaseCount,
                                 "Total Purchase Value": gender_totalvalue,
                                "Average Total Purchase per Person": avg_total_list})
 
-gender_stats_df
+print(gender_stats_df.head())
+print("\n")
 
 
-# In[59]:
 
 
 #Create a table of summary statistics for players of different age ranges
@@ -141,7 +133,9 @@ age_count=age_group_df["Purchase ID"].count()
 age_percent =age_count/total_players
 age_df = pd.DataFrame({"Total Count":age_count,
                       "Percentage of Players":age_percent})
-age_df
+print(age_df.head())
+print("\n")
+
 
 
 # In[60]:
@@ -160,135 +154,26 @@ sorted_countsum["Total Purcase Value"]=price*count
 top_spenders = sorted_countsum.reset_index(drop=False)
 top_spenders = top_spenders.rename(columns={"count":"Purchase Count"})
 top_spenders_cleaned=top_spenders.drop(['Item ID','Purchase ID', 'Age','Price'], axis=1)
-top_spenders_cleaned.head()
+print(top_spenders_cleaned.head())
+print("\n")
 
-
-# In[61]:
 
 
 #Most Popular Items
-
-
-# In[62]:
-
-
-master_df.head()
-
-
-# In[86]:
-
-
 MP_reduced=master_df[["Item Name", "count", "Price"]]
-
-
-# In[87]:
-
-
-#MP_price=MP_reduced["Price"]
-#MP_price
-
-
-# In[88]:
-
-
 MP_reduced_renamed =MP_reduced.rename(columns={"count":"Purchase Count", "Price":"Total Purchase Value"})
-
-
-# In[82]:
-
-
-
-
-
-# In[89]:
-
-
 MP_grouped=MP_reduced_renamed.groupby(["Item Name"])
-
-
-# In[90]:
-
-
 MP_groupedbysum=MP_grouped.sum()
-
-
-# In[91]:
-
-
 MP_base = MP_groupedbysum.reset_index(drop=False)
-
-
-# In[68]:
-
-
-#MP_price =MP_base["Item Price"]
-
-
-# In[69]:
-
-
-#MP_total_purchase = MP_base["Purchase Count"]*MP_price
-
-
-# In[70]:
-
-
-#MP_base["Total Purchase Value"] = MP_total_purchase
-
-
-# In[97]:
-
-
 MP_purchase=MP_base.sort_values(["Total Purchase Value"], ascending=False)
+get_price_column_df = master_df.drop_duplicates(subset='Item Name', keep="first")
+most_popular_items = pd.merge(MP_purchase, get_price_column_df, on="Item Name")
+most_popular_items [["Item Name","Purchase Count", "Price", "Total Purchase Value"]]
+most_popular_items=most_popular_items[["Item Name", "Purchase Count", "Price", "Total Purchase Value"]]
+print(most_popular_items.head())
+print("\n")
 
 
-# In[98]:
-
-
-MP_purchase
-
-
-# In[100]:
-
-
-#MP_items=MP_purchase["Item Name"]
-
-
-# In[103]:
-
-
-#MP_purchaseCount=MP_purchase["Purchase Count"]
-
-
-# In[ ]:
-
-
-#MP_price=MP_reduced["Price"]
-
-
-# In[104]:
-
-
-#MP_total_purchase_value=MP_purchase["Total Purchase Value"]
-
-
-# In[106]:
-
-
-#MP_final = pd.DataFrame([
-        {"Item Name": MP_items,
-         "Average Purchase Price":MP_price,
-         "Total Purcase Value": MP_total_purchase_value}])
-
-
-# In[107]:
-
-
-#MP_final
-
-
-# In[ ]:
-
-
-
-
+#Most Profitable Items
+most_profitable_items=MP_base.sort_values(["Total Purchase Value"], ascending=False)
+print(most_profitable_items.head())
