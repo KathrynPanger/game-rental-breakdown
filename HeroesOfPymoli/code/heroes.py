@@ -16,15 +16,15 @@ import numpy as np
 
 
 #read the master data file and create a dataframe
-masterFile = "Resources/purchase_data.csv"
+masterFile = "../Resources/purchase_data.csv"
 master_df = pd.read_csv(masterFile)
 master_df.head()
 
 
 
 #create the age group category for later and add to dataframe, completing my master dataframe
-bins=[0,9,14,19,24,29,34,39,400]
-labels=["<10","10-14","15-19","20-24","25-29","30-34","35-39","40+"]
+bins = [0,10,15,20,25,30,35,40,45]
+labels=["<=10", "11-15", "16-20", "21-25", "26-30", "31-35", "36-40", "41-45"]
 master_df["Age Group"] = pd.cut(master_df["Age"], bins, labels=labels, include_lowest=True)
 
 
@@ -32,7 +32,7 @@ master_df["Age Group"] = pd.cut(master_df["Age"], bins, labels=labels, include_l
 #Create a dataframe to display total number of players
 unique_players=master_df["SN"].unique()
 total_players=np.count_nonzero(unique_players)
-total_players_df =pd.DataFrame([
+total_players=pd.DataFrame([
     {"Total Players":total_players}])
 print(total_players_df)
 print("\n")
@@ -55,10 +55,6 @@ basic_info = pd.DataFrame([
 print(basic_info)
 print("\n")
 
-
-# In[57]:
-
-
 #create a dataframe to display the gender breakdown of players
 unique_sn_df = master_df.drop_duplicates(subset='SN', keep="first")
 male_players = unique_sn_df.loc[master_df["Gender"] == "Male", "Gender"]
@@ -77,9 +73,6 @@ print(playerCount_df.head())
 print("\n")
 
 
-
-
-
 #Create a table of summary statistics concerning Male and Female purchases
 
 # Use GroupBy to get most of our Gender data
@@ -90,7 +83,7 @@ gender_priceMean=grouped_gender_df["Price"].mean()
 gender_purchaseCount=grouped_gender_df["Purchase ID"].count()
 gender_totalvalue=grouped_gender_df["Price"].sum()
 
-#### Get the average total purchase per person. I know there's an easier way to do this, but I haven't found it yet.
+#### Get the average total purchase per person. 
 #Get female average spent per person
 female_df=master_df.loc[master_df["Gender"]=="Female", :] #dataset of only females
 grouped_gender_sn_df = female_df.groupby(['SN'])
@@ -122,9 +115,6 @@ gender_stats_df = pd.DataFrame({"Purchase Count": gender_purchaseCount,
 print(gender_stats_df.head())
 print("\n")
 
-
-
-
 #Create a table of summary statistics for players of different age ranges
 
 master_df["Age Group"] = pd.cut(master_df["Age"], bins, labels=labels, include_lowest=True)
@@ -135,11 +125,6 @@ age_df = pd.DataFrame({"Total Count":age_count,
                       "Percentage of Players":age_percent})
 print(age_df.head())
 print("\n")
-
-
-
-# In[60]:
-
 
 #Create Chart of Top Spenders
 
@@ -156,7 +141,6 @@ top_spenders = top_spenders.rename(columns={"count":"Purchase Count"})
 top_spenders_cleaned=top_spenders.drop(['Item ID','Purchase ID', 'Age','Price'], axis=1)
 print(top_spenders_cleaned.head())
 print("\n")
-
 
 
 #Most Popular Items
