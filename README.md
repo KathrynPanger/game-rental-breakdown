@@ -2,7 +2,7 @@
 
 
 ## Summary:
-This project visualizes the relationship between health-related risk factors at the state level using Javascript.The data set is based on 2014 ACS 1-year estimates, including data on rates of income, obesity, poverty, etc. by state. 
+Data on video game sales is analyzed to explore the purchase choices of buyers from various demographics. Summary statistics are highlighted for groups of interest. 
 
 ## The Files:
 ```
