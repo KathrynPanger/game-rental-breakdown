@@ -1,6 +1,3 @@
-# D3 Challenge
-
-
 ## Summary:
 Data on video game sales is analyzed to explore the purchase choices of buyers from various demographics. Summary statistics are highlighted for groups of interest. 
 
